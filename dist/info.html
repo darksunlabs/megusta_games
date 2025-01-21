@@ -3,7 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Megusta Games</title>
+    <title>Info</title>
+    <link rel="icon" href="img/home.png" />
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
@@ -41,39 +42,29 @@
       href="https://fonts.googleapis.com/css2?family=Nunito:wght@200;300;400;500;600;700;800;900&display=swap"
       rel="stylesheet"
     />
+    <script defer="defer" src="./main.js"></script>
+
     <link rel="stylesheet" href="./main.css" />
   </head>
-  <body class="home">
-    
+  <body class="home" onload="load_rules();">
+
+
     <!-- Home Wrapper -->
     <div class="homeWrapper">
-      <img class="homeImg" src="./img/home.png" alt="" />
 
-     
-      <div class="homeText3">Megusta</div>
-      <div class="homeText4">A demo by Dark Sun Labs</div>
-      <br/><br/>
-      <div style="color:#fefefe; background-color: purple;font-size: 1.7em;width: 75%;margin-left:12.5%;">
-        <p>Megusta is a Multichain Casual Gaming Platform coming soon to your favorite chain</p>
-        <p>The premier Play-to-Earn Casual Gaming Dapp where everyone wins</p>
+
+      <div class="homeText3" id="game_title">Megusta</div>
+      <div class="homeText" id="now_tagline">A Demo By Dark Sun Labs</div>
+      <br/><br/><br/><br/>
+      <div id="game_info" style="color:white;background-color:purple;width:90%;margin-left:6%">
+
       </div>
-      <div style="margin-top: 4%;">
-        <div class="homeText" style="cursor:pointer;" onclick="to_launch('pixelmayhem')">Pixel Mayhem</div>
-        <div class="homeText" style="cursor:pointer;" onclick="to_launch('monumental')">Monu-Mental</div>
-      </div>
-      <div>
-        <div class="homeText" style="cursor:pointer;" onclick="to_launch('snake')">Good ol' Snake</div>
-        <div class="homeText" style="cursor:pointer;" onclick="to_launch('nonogram')">Nonogram</div>
-      </div>
-      <div>
-        <div class="homeText" style="cursor:pointer;" onclick="to_launch('spacerumble')">Space Rumble</div>
-        <div class="homeText" style="cursor:pointer;" onclick="to_launch('tetris')">Tetris</div>
-      </div>
-      <div id="res" class="homeText2"></div>
-      <br/><br/>
-      <div class="homeText2">More Details on Megusta COMING SOON</div>
     </div>
-    <canvas id="game" width="620" height="620" style="display:none"></canvas>
+
+  <br/>
+
+
+  <canvas id="game" width="620" height="620" style="display:none"></canvas>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
   </body>

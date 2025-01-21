@@ -1561,8 +1561,8 @@
     padding: 6em 3em;
   }
   .homeWrapper .homeText {
-    background-color: purple;
-    color: white;
+    background-color: #ff6f00;
+    color: black;
     display: inline-block;
     width: 30%;
     margin-right: 1%;

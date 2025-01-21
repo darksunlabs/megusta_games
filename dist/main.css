@@ -11,7 +11,7 @@
     background-color: #000000;
     font-size: 1em;
   }
-  
+
   /* Page Header */
   .pageHeader {
     background-color: #000000;
@@ -104,8 +104,8 @@
     display: inline-block;
     text-decoration: none;
     background-color: purple;
-    cursor: pointer;
     color: white;
+    cursor: pointer;
     padding: 0.3em 1.3em;
     border-radius: 0.6em;
     font-size: 1.4em;
@@ -120,8 +120,8 @@
   }
   .pageHeader .walletBtn:hover {
     border: 1px solid pink;
-    background-color: pink;
     color: purple;
+    background-color: pink;
   }
   .pageHeader .languageBtn {
     border: 1px solid var(--primaryColor);
@@ -152,7 +152,7 @@
   .pageHeader .headerButtons {
     width: 25%;
   }
-  
+
   /* Banner Section */
   .bannerSection {
     position: relative;
@@ -206,7 +206,7 @@
     padding: 0.4em 0;
     margin-top: 0.9em;
   }
-  
+
   /* Side Menu */
   .sideMenu {
     width: 85px;
@@ -354,7 +354,7 @@
     color: #958c9c;
     display: inline-block;
   }
-  
+
   /* Cards Section */
   .cardsSection {
     border-top: 1px solid #262237;
@@ -561,7 +561,7 @@
     filter: invert(50%) sepia(88%) saturate(914%) hue-rotate(280deg)
       brightness(103%) contrast(106%);
   }
-  
+
   /* Filter Menu */
   .filterMenu {
     position: absolute;
@@ -660,7 +660,7 @@
     background-color: #2d2045;
     border: 1px solid #412d6a;
   }
-  
+
   /* Activity Page */
   /* Killer Table Wrapper */
   .killerTableWrapper .killerTable .userImageCollector {
@@ -740,7 +740,7 @@
   .killerTableWrapper .killerTable tbody tr:nth-of-type(odd) {
     background-color: #2d2145;
   }
-  
+
   /* Custom Paginations */
   .customPaginations {
     margin: 2em 0;
@@ -786,7 +786,7 @@
     color: #ffb7f8;
     margin-top: 0.5em;
   }
-  
+
   /* Social Page */
   .cardsSection.socialSection .socialLinks {
     text-align: center;
@@ -908,7 +908,7 @@
   .centerText a:hover {
     text-shadow: 0 0 10px var(--secondaryColor);
   }
-  
+
   /* Leaderboard Page */
   .killerTableWrapper .killerTableHeader {
     display: flex;
@@ -956,7 +956,7 @@
   .killerTableWrapper .killerTable.leaderboardTable tbody td:nth-of-type(2) {
     text-align: left;
   }
-  
+
   /* Analytic Page */
   #multiCharts2 {
     max-width: 100%;
@@ -1062,7 +1062,7 @@
     position: relative;
     z-index: 100;
   }
-  
+
   /* Nft Page */
   /* Nfts Section */
   .midContents.nftsSection {
@@ -1178,7 +1178,7 @@
   .killerTableWrapper .killerTable.nftsTable tbody td:nth-of-type(2) {
     text-align: left;
   }
-  
+
   /* Nfts Analytics Page */
   .analyticsCharts.nftsCharts .nftsGrayHeading {
     color: #f6ececcc;
@@ -1227,7 +1227,7 @@
   #dotsChart3 {
     margin-top: 3em;
   }
-  
+
   /* Buy Page */
   .buyNftSection {
     padding: 5em 0;
@@ -1486,7 +1486,7 @@
   #collapseCards .killerCard .cardFooter {
     padding: 0.5em;
   }
-  
+
   /* About Page */
   .aboutBlackBox {
     background-color: #000000;
@@ -1551,7 +1551,7 @@
     color: var(--primaryColor);
     transform: scale3d(-1, 1, -1);
   }
-  
+
   /* Landing Page */
   body.home {
     background-color: #000000;
@@ -1562,13 +1562,14 @@
   }
   .homeWrapper .homeText {
     background-color: purple;
-    color: white;
+    color: #fefefe;
     display: inline-block;
     width: 30%;
     margin-right: 1%;
     font-family: "Poppins";
     font-weight: 600;
     margin-bottom: 1em;
+
   }
   .homeWrapper .homeText2 {
     color: purple;
@@ -1582,7 +1583,7 @@
     font-family: "Poppins";
     font-size:400%;
     font-weight: 600;
-    
+
   }
   .homeWrapper .homeText4 {
     color: purple;
@@ -1651,12 +1652,11 @@
     padding: 0.4em 1.4em;
     margin-right: 0;
   }
-
   body.home .pageHeader.homeHeader .walletBtn img {
     vertical-align: middle;
     margin-right: 0.5em;
   }
-  
+
   /* Offers Page */
   .nftsSection.userSection {
     text-align: left;
@@ -1971,7 +1971,7 @@
   .multiAccounts .accountParent.odd {
     border-bottom: none;
   }
-  
+
   /* Modal */
   .profileModal .modalHeading {
     font-size: 2.5em;
@@ -2010,7 +2010,7 @@
     max-width: 320px;
     margin: 0 auto;
   }
-  
+
   /* Cosmic Page */
   .dominateSection {
     /* background-image: url("../img/dominate-img.png");
@@ -2108,7 +2108,7 @@
     border-color: var(--primaryColor);
     color: var(--primaryColor);
   }
-  
+
   /* Cosmic Section */
   .cardsSection.cosmicSection {
     border-top: none;
@@ -2239,7 +2239,7 @@
     color: #f6ecec80;
     margin-left: 0.5em;
   }
-  
+
   /* Main Page */
   .mainSection {
     padding: 8em 0 4em 0;
@@ -2300,7 +2300,7 @@
     right: 50px;
     top: 45%;
   }
-  
+
   /* Multi Cards Section */
   .multiCardsSection {
     border-top: 1px solid #262237;
@@ -2372,7 +2372,7 @@
   .multiCardsSection .killerCard .liveContents span {
     color: #00c054;
   }
-  
+
   /* Top Cards */
   .topCardsHeading {
     font-weight: 600;
@@ -2451,7 +2451,7 @@
     font-size: 0.8em;
     margin-left: 0.5em;
   }
-  
+
   /* Footer */
   .pageFooter {
     margin-top: 5em;
@@ -2508,7 +2508,7 @@
     border-bottom: 3px solid #ffffffc4;
     padding-bottom: 1.4em;
   }
-  
+
   /* Media Query */
   @media (max-width: 992px) {
     .midContents .blackBox {
@@ -2701,7 +2701,7 @@
       top: 25px !important;
     }
   }
-  
+
   /* 768px */
   @media (max-width: 768px) {
     .filterMenu {
@@ -2734,7 +2734,7 @@
       padding: 2em;
     }
   }
-  
+
   /* 554px */
   @media (max-width: 554px) {
     .pageHeader .headerSearchArea {
@@ -2833,9 +2833,8 @@
     .analyticsCharts .chartParent .chartPercentParent {
       display: none;
     }
-  
+
     /* .pageHeader .logoSide img {
       height: 85px;
     } */
   }
-  

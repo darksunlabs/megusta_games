@@ -30,226 +30,29 @@ var last_click = 0;
 var mental_clicks = 0;
 var mental_time = Date.now();
 
-//50-36gold 47 9-39grey 11-21blue 26-40bluishgreen 34-16grey 26-40greenish 37-5blue 43-18fadedblue 30-46maroon 36-12gold
-async function connect(code) {
-
-  const provider = await detectEthereumProvider()
-
-  if (provider && provider === window.ethereum) {
-    console.log("MetaMask is available!");
-    const chainId = 5003;
-    console.log(window.ethereum.networkVersion);
-    if (window.ethereum.networkVersion !== chainId) {
-        const cid = '0x138b';
-      try {
-        await window.ethereum.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: cid }]
-        });
-        console.log("changed to Mantle testnet successfully");
-
-      } catch (err) {
-          // This error code indicates that the chain has not been added to MetaMask
-        if (err.code === 4902) {
-        console.log("please add Mantle Sepolia Testnet as a network");
-          await window.ethereum.request({
-            method: 'wallet_addEthereumChain',
-            params: [
-              {
-                chainName: 'Mantle Testnet Sepolia',
-                chainId: cid,
-                nativeCurrency: { name: 'MANTLE', decimals: 18, symbol: 'MNT' },
-                rpcUrls: ['https://rpc.sepolia.mantle.xyz']
-              }
-            ]
-          });
-        }
-        else {
-            console.log(err);
-        }
-      }
-    }
-    await startApp(provider);
-  } else {
-    console.log("Please install MetaMask!")
-  }
-
-
-
-}
-window.connect = connect;
-
-
-async function startApp(provider) {
-  if (provider !== window.ethereum) {
-    console.error("Do you have multiple wallets installed?")
-  }
-  else {
-    const accounts = await window.ethereum
-    .request({ method: "eth_requestAccounts" })
-    .catch((err) => {
-      if (err.code === 4001) {
-        console.log("Please connect to MetaMask.")
-      } else {
-        console.error(err)
-      }
-    })
-    console.log("hi");
-  const account = accounts[0];
-  var web3 = new Web3(window.ethereum);
-  const bal = await web3.eth.getBalance(account);
-  //console.log("hi");
-  console.log(bal);
-  console.log(account);
-  localStorage.setItem("acc",account.toString());
-  }
-}
-
-// outputs the current value of the counter
-async function callContract() {
-  const abi = await fetchAbi();
-  //console.log(abi);
-  const w3 = new Web3("https://coston2-api.flare.network/ext/C/rpc");
-  const cnt = new w3.eth.Contract(abi, "0x24A99A6dcFC3332443037C5a09505731312fD154");
-  const myAddress = localStorage.getItem("acc");
-  //console.log(myAddress);
-  const res = await cnt.methods.fetch().call();
-  console.log("Counter: ", res);
-  document.getElementById("res").innerHTML = `
-    Result:
-    <br/>
-    `.concat(res.toString()).concat(`
-  `);
-
-}
-window.callContract = callContract;
-
-
-// increments the counter by 1
-async function updateCounter() {
-  const web3 = new Web3(window.ethereum);
-  const abiInstance = ABI.abi;
-  const contract = new web3.eth.Contract(
-                                    abiInstance,
-                     "0x24A99A6dcFC3332443037C5a09505731312fD154");
-
-  const myAddress = localStorage.getItem("acc");
-  try {
-    const res = await contract.methods.increment().send({from: myAddress});
-    document.getElementById("res").innerHTML = `
-    Result:
-    <br/>
-    `.concat('Counter has been incremented').concat(`
-  `);
-  }
-  catch (err){
-    console.log(err);
-    document.getElementById("res").innerHTML = `
-    Result:
-    <br/>
-    `.concat(err.toString()).concat(`
-  `);
-  }
 
 
 
 
-}
-window.updateCounter = updateCounter;
 
 
-// resets the counter to 0, but requires a payment of 0.01 C2FLR to do so (excluding gas)
-async function resetCounter() {
-  const web3 = new Web3(window.ethereum);
-  const abiInstance = await fetchAbi();
-  console.log(abiInstance);
-    const myAddress = localStorage.getItem("acc");
-  //const abiInstance = ABI.abi;
-  const contract = new web3.eth.Contract(
-                                    abiInstance,
-                     "0x24A99A6dcFC3332443037C5a09505731312fD154");
-
-
-  const hundredth_eth = BigInt(10000000000000000);
-  const pay = web3.utils.toWei('0.01', 'ether');
-  try {
-
-    console.log(hundredth_eth);
-    const res3 = await contract.methods.reset_count()
-                .send({from: myAddress, value: pay});
-                document.getElementById("res").innerHTML = `
-    Result:
-    <br/>
-    `.concat('Counter has been reset!').concat(`
-  `);
-  }
-  catch (err){
-    console.log(err);
-    document.getElementById("res").innerHTML = `
-    Result:
-    <br/>
-    `.concat(err.toString()).concat(`
-  `);
-  }
-
-}
-window.resetCounter = resetCounter;
-
-
-// fetches a registered smart contract ABI from the flare explorer
-// doesn't require a metamask connection
-async function fetchAbi(){
-  const base_url = "https://coston2-explorer.flare.network/api";
-  const params =
-    "?module=contract&action=getabi&address=0x24A99A6dcFC3332443037C5a09505731312fD154";
-  const response = await fetch(base_url + params);
-  const abi = JSON.parse((await response.json())["result"]);
-  return abi;
-}
-
-
-async function to_game(){
-  var url = window.location.toString();
-  var chain = url.substring(url.indexOf('=') + 1);
-  window.location.href = "./game.html?chain=".concat(chain);
-}
-window.to_game = to_game;
 
 async function to_home(){
   window.location.href = "./";
 }
 window.to_home = to_home;
 
-async function to_about(){
-  window.location.href = "./about.html";
-}
-window.to_about = to_about;
 
 async function to_launch(game){
-  var url = window.location.toString();
-  var chain = url.substring(url.indexOf('=') + 1);
-  window.location.href = "./launch.html?chain=".concat(chain).concat("game=").concat(game);
+  window.location.href = "./launch.html?".concat(game);
 }
 window.to_launch = to_launch;
 
-async function to_chain(cname){
-  window.location.href = "./dashboard.html?chain=".concat(cname);
-}
-window.to_chain = to_chain;
 
-async function to_dashboard(){
-  var url = window.location.toString();
-  var chain = url.substring(url.indexOf('=') + 1);
-  window.location.href = "./dashboard.html?chain=".concat(chain);
-}
-window.to_dashboard = to_dashboard;
 
 async function load_this_game(){
   var url = window.location.toString();
-  var chain_name = url.substring(url.indexOf('=') + 1).substring(0,3);
-  console.log(chain_name);
-  var game_name = url.substring(url.indexOf('game=') + 5);
-  console.log(game_name);
+  var game_name = url.substring(url.indexOf('?') + 1);
   if (game_name == 'pixelmayhem'){
     console.log('this is '.concat(game_name));
     document.getElementById('game_title').textContent = 'Pixel Mayhem';
@@ -354,12 +157,12 @@ async function load_this_game(){
   }
     start_game_mayhem();
   }
-  else if (game_name == 'mantlesnake') {
+  else if (game_name == 'snake') {
     console.log('this is '.concat(game_name));
-    document.getElementById('game_title').textContent = 'Mantle Snake';
+    document.getElementById('game_title').textContent = "Good Ol' Snake";
     document.getElementById('bod').innerHTML = `
     <br/><br/>
-    <div style="color: purple;font-size: 4em;font-family:monospace;">Mantle Snake</div>
+    <div style="color: purple;font-size: 4em;font-family:monospace;">Good Ol' Snake</div>
     <br/>
 
      <canvas id="game2" width="525" height="525" ></canvas>
@@ -375,11 +178,11 @@ async function load_this_game(){
     tileSize=canvas.clientWidth/tileCount-2;
     drawGame();
   }
-  else if (game_name == 'mentalmantle') {
+  else if (game_name == 'monumental') {
     console.log('this is '.concat(game_name));
-    document.getElementById('game_title').textContent = 'Mental Mantle';
+    document.getElementById('game_title').textContent = 'Monu-Mental';
     document.getElementById('bod').innerHTML = `
-      <h1 style="color: purple;">Mental Mantle</h1>
+      <h1 style="color: purple;">Monu-Mental</h1>
 
         <div class="central_cell">
             <table id="pixel_table" style="background-color: white;width: 40%">
@@ -428,10 +231,10 @@ async function load_this_game(){
         }
       start_game_mental();
   }
-  else if (game_name == "nonogrammantle"){
-    document.getElementById('game_title').textContent = 'Nonogram Mantle';
+  else if (game_name == "nonogram"){
+    document.getElementById('game_title').textContent = 'Nonogram';
     document.getElementById("bod").innerHTML = `
-       <h1 style="color: purple;">Nonogram Mantle</h1>
+       <h1 style="color: purple;">Nonogram</h1>
 
         <div class="central_cell">
             <table id="nono_table" style="background-color: white;width: 40%">
@@ -456,7 +259,7 @@ async function load_this_game(){
         <div>
               <br/>
               <div id="start" onclick="to_rules();" style="color:white;background-color: purple;font-size: 1.6em; width: 7%; text-align: center; cursor: pointer;display:inline-block;margin-left: 4%;margin-right: 0.2%;">Rules</div>
-              <div onclick='check_nono();' style="color: white;background-color: purple;font-size: 1.6em;width:13%;display:inline-block;">Check Solution</div>
+              <div onclick='check_nono();' style="color: white;background-color: purple;font-size: 1.6em;width:13%;display:inline-block;cursor: pointer;">Check Solution</div>
               <div id="restart" onclick="restartNono();" style="color:white;background-color: purple;font-size: 1.6em; width: 10%; text-align: center; cursor: pointer;display:inline-block;">New Game</div>
         </div>
     `;
@@ -521,13 +324,13 @@ async function load_this_game(){
       ctx3.fillStyle = 'pink';
       setupRun();
     }
-    else if (game_name == "mantetris"){
+    else if (game_name == "tetris"){
       console.log('this is '.concat(game_name));
-      document.getElementById('game_title').textContent = 'Mantetris';
+      document.getElementById('game_title').textContent = 'Tetris';
       document.getElementById('bod').innerHTML = `
       <div style="position: absolute; left: 10%; top: 15%;">
-        <h1 style="color:purple; font-size: 4em; ">Mantetris</h1>
-        <div style="color: purple;font-weight: 800;font-size:1.5em;background-color:pink;">Play the all time classic game Tetris for Mantle Network</div><br/>
+        <h1 style="color:purple; font-size: 4em; ">Tetris</h1>
+        <div style="color: purple;font-weight: 800;font-size:1.5em;background-color:pink;">Play the all time classic game Tetris on Web 3</div><br/>
         <div style="color: purple;font-weight:800;font-size:1.5em;">Rules: <br/>You can only move the pieces in specific ways. <br/>Your game is over if your pieces reach the top of the screen, <br/>and you can only remove pieces from the screen <br/>by filling all the blank space in a line.</div>
       </div><br/>
       <canvas id="game2" width="320" height="640" style="margin-left: 30%"></canvas>
@@ -861,7 +664,7 @@ window.drawBG = drawBG;
 
 
 
-// mental mantle part
+// mental part
 
 function shuffle_arr(arr){
   var i;
@@ -1393,7 +1196,7 @@ function restartRun(){
 window.restartRun = restartRun;
 
 
-// mantetris
+// tetris
 
 var canvas4 = document.getElementById('game');
 var ctx4 = canvas4.getContext('2d');
@@ -1701,8 +1504,7 @@ window.to_wp = to_wp;
 
 async function to_rules(){
   var url = window.location.toString();
-  var chain_name = url.substring(url.indexOf('=') + 1).substring(0,3);
-  var game_name = url.substring(url.indexOf('game=') + 5);
+  var game_name = url.substring(url.indexOf('?') + 1);
   window.open('./info.html?'.concat(game_name), '_blank');
 }
 window.to_rules = to_rules;
@@ -1721,29 +1523,29 @@ async function load_rules(){
         <p style="font-size: 1.6em;">Do this in lesser time than your competing players to win Pixel Mayhem.</p>
     `;
   }
-  else if (game_name == 'mantlesnake'){
-    el2.textContent = 'Mantle Snake';
+  else if (game_name == 'snake'){
+    el2.textContent = "Good Ol' Snake";
     el.innerHTML = `
-        <p style="font-size: 2em;">Snake is back! This time on Mantle!</p>
+        <p style="font-size: 2em;">Snake is back! This time on Web 3!</p>
         <p style="font-size: 1.6em;">The iconic Snake Game is back to make you relive your childhood. Move the Snake with Up, Down, Left, Right keys on your Keyboard. The Snake gets longer with each bug it eats. It dies if it touches the boundary or itself (not meant to sound wrong but it probably does).</p>
         <p style="font-size: 1.6em;">Start the game by pressing the Up, Down, Left, or Right key.</p>
     `;
   }
-  else if (game_name == 'nonogrammantle'){
-    el2.textContent = 'Nonogram Mantle';
+  else if (game_name == 'nonogram'){
+    el2.textContent = 'Nonogram';
     el.innerHTML = `
-        <p style="font-size: 2em;">The widely popular Nonogram is now LIVE on Mantle!</p>
+        <p style="font-size: 2em;">The widely popular Nonogram is now LIVE on your favorite chains!</p>
         <p style="font-size: 1.6em;">The goal is to fill the boxes in the grid as per the hints given next to the columns and rows. You're also being timed so you need to be correct, but also quicker than your competing players.</p>
         <p style="font-size: 1.6em;">For example, a [3, 1, 1] next to a row means three consecutive blocks are to be shaded, then a couple of single blocks away from it, and one another as well.</p>
         <p style="font-size: 1.6em;"> Usually, each Nonogram has 1 UNIQUE solution, but if you're confident yours is correct but not unique, we count it too!</p>
     `;
   }
-  else if (game_name == 'mentalmantle'){
-    el2.textContent = 'Mental Mantle';
+  else if (game_name == 'monumental'){
+    el2.textContent = 'Monu-Mental';
     el.innerHTML = `
         <p style="font-size: 2em;">The Mental Game is for you if you flex a Photographic Memory</p>
         <p style="font-size: 1.6em;">The goal is to highlight two boxes with the same symbol and color inside them.  </p>
-        <p style="font-size: 1.6em;">Click two matching symbols and they remain visible, but if they don't match, they hide back! Make every box in the grid visible to complete Mental Mantle. You're also being timed so make sure to be quicker than your competing players!</p>
+        <p style="font-size: 1.6em;">Click two matching symbols and they remain visible, but if they don't match, they hide back! Make every box in the grid visible to complete Monu-Mental. You're also being timed so make sure to be quicker than your competing players!</p>
 
     `;
   }
@@ -1751,14 +1553,14 @@ async function load_rules(){
     el2.textContent = 'Space Rumble';
     el.innerHTML = `
         <p style="font-size: 2em;">A Sort of Variation of Space Impact from Our Black and White Phone Days</p>
-        <p style="font-size: 1.6em;">Can you help Mantle Intern navigate through space dodging the scary asteroids?  </p>
+        <p style="font-size: 1.6em;">Can you help Astro Doggo navigate through space dodging the scary asteroids?  </p>
         <p style="font-size: 1.6em;">Move him up and down the screen to avoid getting hit. There is always 'at least' one place safe on the screen and it is advised to remain close to the center to have access to that spot at all times.</p>
         <p style="font-size: 1.6em;">The highest score at the time of competition close wins!</p>
 
     `;
   }
-  else if (game_name == 'mantetris'){
-    el2.textContent = 'Mantle Tetris';
+  else if (game_name == 'tetris'){
+    el2.textContent = 'Tetris';
     el.innerHTML = `
         <p style="font-size: 2em;">The Iconic Tetris Game is back to remind you of the Good Ol' Days</p>
         <p style="font-size: 1.6em;">Accommodate as many blocks on the canvas as you can before they overflow.  </p>
@@ -1800,10 +1602,9 @@ window.back_to_game = back_to_game;
   //console.log(`keydown key: ${key}, code: ${code}`);
 
   var url = window.location.toString();
-  var chain_name = url.substring(url.indexOf('=') + 1).substring(0,3);
-  var game_name = url.substring(url.indexOf('game=') + 5);
+  var game_name = url.substring(url.indexOf('?') + 1);
 
-  if (game_name == "mantlesnake"){
+  if (game_name == "snake"){
     //up
     if(e.code=="ArrowUp"){
       //prevent snake from moving in opposite direcction
@@ -1859,7 +1660,7 @@ window.back_to_game = back_to_game;
         }
       }
   }
-  else if (game_name == "mantetris"){
+  else if (game_name == "tetris"){
     if (e.code == "ArrowLeft"){
       const col = tetromino.col - 1;
       if (isValidMove(tetromino.matrix, tetromino.row, col)) {

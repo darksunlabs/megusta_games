@@ -1,0 +1,225 @@
+/*
+    Code by Kim Pettersson.
+    Free to use but be nice and ref to me then.
+    https://www.facebook.com/kipe91,
+    https://www.instagram.com/kimp3tt3rsson.
+*/
+
+/* ------------- body controll ----------- */
+body {
+    text-align: center;
+}
+
+.site {
+    width: 100%;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.left_cell {
+    margin: auto;
+    display: inline-block;
+}
+
+.right_cell {
+    margin-left: 50px;
+    display: inline-block;
+    /* max-width: 800px;
+    max-height: 600px;
+    overflow: scroll; */
+}
+
+footer {
+    margin-top: 50px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+#pixelGame {
+    display: block;
+}
+
+#pixel_canvas {
+    background-color: white;
+}
+
+/* ------------ Some memory css ------------ */
+#memoryGame {
+    display: none;
+}
+
+.countA {
+    display: none;
+}
+
+.countB {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.countC {
+    font-weight: bold;
+}
+
+#divCounter {
+    display: none;
+    margin-top: 10px;
+}
+
+#message {
+    display: none;
+}
+
+span {
+    font-weight: normal;
+}
+
+/* ------------ Standard setups ------------ */
+h1 {
+    font-family: Monoton;
+    font-size: 70px;
+    margin: 0.2em;
+}
+
+h2 {
+    margin: 0 0 0.25em;
+    font-size: 18px;
+}
+
+#deleteNote {
+    padding: 15px;
+    color: rgb(117,0,0);
+    font-size: 14px;
+}
+
+#sliderValue {
+    color: black;
+}
+
+table,
+tr,
+td {
+    border: 1px solid black;
+}
+
+table {
+    border-collapse: collapse;
+    margin: 0 auto;
+    cursor: cell;
+    table-layout: fixed;
+}
+
+tr {
+    height: 20px;
+    min-height: 20px;
+}
+
+td {
+    width: 20px;
+    min-width: 20px;
+}
+
+#pixel_fix {
+    /* Fixing the "single one pixel" */
+    margin: 0 0 0 10px;
+    cursor: default;
+    display: inline-block;
+}
+
+#input_size {
+    display: inline-block;
+}
+
+input[type=number] {
+    width: 5em;
+    text-align: center;
+}
+
+p {
+    margin: 10px 0 5px 0;
+    text-decoration: underline;
+}
+
+/* ------- Button style -------- */
+input[type=submit] {
+    margin: 5px 0 0 0;
+    font-weight: bold;
+    width: 100px;
+    cursor: pointer;
+}
+
+input[type=button] {
+    margin: 0;
+    font-weight: bold;
+    width: 140px;
+    cursor: pointer;
+}
+
+/* placing checkbox in position */
+input[type=checkbox] {
+    margin: 5px 37px 0 0;
+    cursor: pointer;
+}
+#checkbox_1 {
+    margin-left: 37px;
+}
+
+/* Create "boxes" to separete the setups */
+.container {
+    border: 1px solid black;
+    width: 280px;
+    margin: 10px auto;
+    padding: 5px;
+    background-color: grey;
+}
+
+.notActive {
+    display: none;
+}
+
+#sizePicker {
+    margin-top: 7px;
+}
+
+/* ---------- Styling the range input -------- */
+.paintSlider {
+    -webkit-appearance: none;
+    width: 50%;
+    height: 10px;
+    border-radius: 5px;
+    background: #fff;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+}
+
+.paintSlider:hover {
+    opacity: 1;
+}
+
+.paintSlider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 25%;
+    background: #4CAF50;
+    cursor: pointer;
+}
+
+.paintSlider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    border-radius: 25%;
+    background: #4CAF50;
+    cursor: pointer;
+}
+
+/* ---------- Img size for memory -------- */
+img {
+    width: 100px;
+    height: 120px;
+    margin: 4px;
+    border: solid 1px black;
+}
