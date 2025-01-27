@@ -1014,13 +1014,13 @@ canvas3.height = 480;
 
 // Load the assets
 const playerImage = new Image();
-playerImage.src = './img/mintern.png';
+playerImage.src = './img/playerbg.png';
 
 const obstacle1Image = new Image();
-obstacle1Image.src = './img/obstacle1.png';
+obstacle1Image.src = './img/obstacle1bg.png';
 
 const obstacle2Image = new Image();
-obstacle2Image.src = './img/obstacle2.png';
+obstacle2Image.src = './img/obstacle2bg.png';
 
 // Define the game variables
 var playerX = 10;
@@ -1554,7 +1554,7 @@ async function load_rules(){
     el.innerHTML = `
         <p style="font-size: 2em;">A Sort of Variation of Space Impact from Our Black and White Phone Days</p>
         <p style="font-size: 1.6em;">Can you help Astro Doggo navigate through space dodging the scary asteroids?  </p>
-        <p style="font-size: 1.6em;">Move him up and down the screen to avoid getting hit. There is always 'at least' one place safe on the screen and it is advised to remain close to the center to have access to that spot at all times.</p>
+        <p style="font-size: 1.6em;">Move him up and down the screen to avoid getting hit. Remember, asteroids can destabilize the ship just by being too close to it, without even touching it. So try to fly at a SAFE DISTANCE. There is always 'at least' one place safe on the screen and it is advised to remain close to the center to have access to that spot at all times.</p>
         <p style="font-size: 1.6em;">The highest score at the time of competition close wins!</p>
 
     `;
