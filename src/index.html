@@ -43,8 +43,25 @@
     />
     <link rel="stylesheet" href="./main.css" />
   </head>
-  <body class="home">
-    
+  <body class="home" onload="loadHome();">
+    <div class="pageHeader homeHeader">
+
+        <select name="typc" id="chain_name" style="width: 15%;font-size: 1.4em;">
+              <option value="current">Select Chain</option>
+              <option value="eth">Ethereum</option>
+              <option value="mnt">Mantle</option>
+              <option value="lsk">Lisk</option>
+              <option value="flr">Flare</option>
+              <option value="gvt">Gravity</option>
+              
+
+        </select>
+        <button style="color: white;background-color: purple;width: 5%;font-size: 1.2em;border-radius: 15%;" onclick="choose_chain();">Enter</button>
+
+      
+
+      
+    </div>
     <!-- Home Wrapper -->
     <div class="homeWrapper">
       <img class="homeImg" src="./img/home.png" alt="" />

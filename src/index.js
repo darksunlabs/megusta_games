@@ -1022,6 +1022,9 @@ obstacle1Image.src = './img/obstacle1bg.png';
 const obstacle2Image = new Image();
 obstacle2Image.src = './img/obstacle2bg.png';
 
+var expImage = new Image();
+expImage.src = './img/nyan.png';
+
 // Define the game variables
 var playerX = 10;
 var playerY = canvas3.height - 50;
@@ -1033,6 +1036,16 @@ var obstacleSpeed = 4;
 var scoreRun = 0;
 
 var stars = [];
+
+var lastExp = Date.now();
+var expOn = false;
+var exps = [];
+const expSpeed = 7;
+
+var armorOn = false;
+var armorStart = 0;
+var armorLeft = 1;
+var armorLevel = 1000;
 
 function clearScreen2(){
 
@@ -1088,7 +1101,9 @@ async function setupRun() {
   ctx3.clearRect(0, 0, canvas3.width, canvas3.height);
   clearScreen2();
   // Draw the player
+
   ctx3.drawImage(playerImage, 0, 0, playerImage.width, playerImage.height, playerX, playerY, 70, 50);
+
 
 
 
@@ -1104,6 +1119,16 @@ async function reloadRun() {
   clearScreen2();
   // Draw the player
   ctx3.drawImage(playerImage, 0, 0, playerImage.width, playerImage.height, playerX, playerY, 70, 50);
+  if (Date.now() - armorStart >= 3000){
+    armorOn = false;
+  }
+  if (armorOn){
+    ctx3.fillStyle = 'rgb(255,255,0, 0.3)';
+    //ctx3.fillRect(playerX,playerY,70, 50);
+    ctx3.beginPath();
+    ctx3.ellipse(playerX + 35, playerY + 25, 40, 30, 0, 0,  2 * Math.PI);
+    ctx3.fill();
+  }
 
   // Update the obstacles
   for (let i = 0; i < obstacles.length; i++) {
@@ -1114,20 +1139,33 @@ async function reloadRun() {
 
     // Check for collision with the player
     if (checkCollisionRun(playerX, playerY, 50, 50, obstacles[i].x, obstacles[i].y, 50, 50)) {
-      // Game over
-      ctx3.fillStyle = 'black';
-      ctx3.globalAlpha = 0.75;
-      ctx3.fillRect(0, canvas3.height / 2 - 30, canvas3.width, 60);
+      if (armorOn){
+        continue;
+      }
+      else {
+        // Game over
+        ctx3.fillStyle = 'black';
+        ctx3.globalAlpha = 0.75;
+        ctx3.fillRect(0, canvas3.height / 2 - 30, canvas3.width, 60);
 
-      ctx3.globalAlpha = 1;
-      ctx3.fillStyle = 'white';
-      ctx3.font = '32px monospace';
-      ctx3.textAlign = 'center';
-      ctx3.textBaseline = 'middle';
-      ctx3.fillText('GAME OVER! Your score is '.concat(scoreRun.toString()), canvas3.width / 2, canvas3.height / 2);
-      obstacles = [];
-      scoreRun = 0;
-      return;
+        ctx3.globalAlpha = 1;
+        ctx3.fillStyle = 'white';
+        ctx3.font = '32px monospace';
+        ctx3.textAlign = 'center';
+        ctx3.textBaseline = 'middle';
+        ctx3.fillText('GAME OVER! Your score is '.concat(scoreRun.toString()), canvas3.width / 2, canvas3.height / 2);
+        obstacles = [];
+        scoreRun = 0;
+        exps = [];
+        expOn = false;
+        lastExp = Date.now();
+        armorOn = false;
+        armorStart = 0;
+        armorLeft = 1;
+        armorLevel = 1000;
+        return;
+      }
+
     }
 
     // Remove the obstacle if it's off the screen
@@ -1174,15 +1212,79 @@ async function reloadRun() {
 
   }
 
+  // Update the exps
+  for (let i = 0; i < exps.length; i++) {
+    exps[i].x -= expSpeed;
+
+    // Draw the exp
+    ctx3.drawImage(exps[i].image, 0, 0, exps[i].image.width, exps[i].image.height, exps[i].x, exps[i].y, 50, 50);
+
+
+
+    // Remove the exp if it's off the screen
+    if (exps[i].x < -exps[i].image.width) {
+      exps.splice(i, 1);
+    }
+
+    // Check if the player received the incoming exp
+    else if (checkCollisionRun(playerX, playerY, 50, 50, exps[i].x, exps[i].y, 50, 50)) {
+      expOn = true;
+      exps.splice(i, 1);
+    }
+    else {}
+  }
+
+  // add ExpUp
+
+  
+  var chain_name = localStorage.getItem('chain_meg');
+
+  if (chain_name == 'mnt'){
+    expImage.src = './img/mnt.png';
+  }
+  else if (chain_name == 'gvt'){
+    expImage.src = './img/gvt.png';
+  }
+  else if (chain_name == 'lsk'){
+    expImage.src = './img/lsk.png';
+  }
+  else if (chain_name == 'flr'){
+    expImage.src = './img/flr.png';
+  }
+  else if (chain_name == 'eth'){
+    expImage.src = './img/eth.png';
+  }
+
+  if (Date.now() - lastExp >= 30000){
+    lastExp = Date.now();
+    const yExp = Math.floor(Math.random()*(canvas3.height - 50));
+    exps.push({ x: canvas3.width, y: yExp, image: expImage });
+  }
+
+
   // Update the score
-  scoreRun = scoreRun + 1 + Math.floor(scoreRun/1000);
+  if (expOn){
+    scoreRun = scoreRun + 500;
+    expOn = false;
+  }
+  else {
+    scoreRun = scoreRun + 1;
+  }
+
+  // Update the armor
+  if (scoreRun >= armorLevel && armorLeft < 9){
+    armorLeft++;
+    armorLevel = armorLevel * 2.5;
+  }
+
 
   // Draw the score
-  ctx3.font = '24px Arial';
-  ctx3.fillStyle = 'purple';
+  ctx3.font = '20px Arial';
+  ctx3.fillStyle = '#cccccc';
   ctx3.textAlign = 'left';
   ctx3.textBaseline = 'top';
   ctx3.fillText('Score: ' + scoreRun, 10, 10);
+  ctx3.fillText('Armor: ' + armorLeft, canvas3.width - 95, 10);
 
   // Request the next frame
   requestAnimationFrame(reloadRun);
@@ -1553,8 +1655,9 @@ async function load_rules(){
     el2.textContent = 'Space Rumble';
     el.innerHTML = `
         <p style="font-size: 2em;">A Sort of Variation of Space Impact from Our Black and White Phone Days</p>
-        <p style="font-size: 1.6em;">Can you help Astro Doggo navigate through space dodging the scary asteroids?  </p>
-        <p style="font-size: 1.6em;">Move him up and down the screen to avoid getting hit. Remember, asteroids can destabilize the ship just by being too close to it, without even touching it. So try to fly at a SAFE DISTANCE. There is always 'at least' one place safe on the screen and it is advised to remain close to the center to have access to that spot at all times.</p>
+        <p style="font-size: 1.6em;">Can you help Space Doggo navigate through space dodging the scary asteroids?  </p>
+        <p style="font-size: 1.6em;">Move him up and down the screen to avoid getting hit. Remember, asteroids can destabilize the ship without touching it so try to not be TOO CLOSE. There is always 'at least' one place safe on the screen and it is advised to remain close to the center to have access to that spot at all times.</p>
+        <p style="font-size: 1.6em;">Try to get the EXP powerups that whizz past. They appear every 30 seconds. You also have an armor that makes you invincible for 3 seconds. You can activate it with the Left key, but don't rely on it too much: it gets rarer as your score goes higher.</p>
         <p style="font-size: 1.6em;">The highest score at the time of competition close wins!</p>
 
     `;
@@ -1659,6 +1762,13 @@ window.back_to_game = back_to_game;
           playerY = playerY + playerSpeed;
         }
       }
+      if (e.code == "ArrowLeft"){
+        if (armorLeft >= 1 && !armorOn){
+          armorOn = true;
+          armorStart = Date.now();
+          armorLeft = armorLeft - 1;
+        }
+      }
   }
   else if (game_name == "tetris"){
     if (e.code == "ArrowLeft"){
@@ -1698,3 +1808,17 @@ window.back_to_game = back_to_game;
 
 
 });
+
+
+async function choose_chain(){
+    const cname = document.getElementById('chain_name').value;
+    console.log(cname);
+    localStorage.setItem('chain_meg', cname);
+}
+window.choose_chain = choose_chain;
+
+
+async function loadHome(){
+    localStorage.setItem('chain_meg', 'eth');
+}
+window.loadHome = loadHome;
