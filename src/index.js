@@ -1013,8 +1013,24 @@ canvas3.width = 640;
 canvas3.height = 480;
 
 // Load the assets
-const playerImage = new Image();
+var playerImage = new Image();
 playerImage.src = './img/playerbg.png';
+
+if (localStorage.getItem('chain_meg') == 'eth'){
+  playerImage.src = './img/ethpl.png';
+}
+else if (localStorage.getItem('chain_meg') == 'mnt'){
+  playerImage.src = './img/mntpl.png';
+}
+else if (localStorage.getItem('chain_meg') == 'flr'){
+  playerImage.src = './img/flrpl.png';
+}
+else if (localStorage.getItem('chain_meg') == 'gvt'){
+  playerImage.src = './img/gvtpl.png';
+}
+else if (localStorage.getItem('chain_meg') == 'lsk'){
+  playerImage.src = './img/lskpl.png';
+}
 
 const obstacle1Image = new Image();
 obstacle1Image.src = './img/obstacle1bg.png';
@@ -1137,6 +1153,13 @@ async function reloadRun() {
     // Draw the obstacle
     ctx3.drawImage(obstacles[i].image, 0, 0, obstacles[i].image.width, obstacles[i].image.height, obstacles[i].x, obstacles[i].y, 50, 50);
 
+    if (obstacles[i].x <= 90 && Math.abs(playerY - obstacles[i].y) <= 100){
+      ctx3.fillStyle = 'rgb(255,0,0, 0.3)';
+      ctx3.beginPath();
+      ctx3.ellipse(obstacles[i].x + 22, obstacles[i].y + 25, 35, 30, 0, 0,  2 * Math.PI);
+      ctx3.fill();
+    }
+
     // Check for collision with the player
     if (checkCollisionRun(playerX, playerY, 50, 50, obstacles[i].x, obstacles[i].y, 50, 50)) {
       if (armorOn){
@@ -1217,6 +1240,8 @@ async function reloadRun() {
     exps[i].x -= expSpeed;
 
     // Draw the exp
+    ctx3.fillStyle = 'rgba(170,170,170,0.7)';
+    ctx3.fillRect(exps[i].x, exps[i].y, 50,50);
     ctx3.drawImage(exps[i].image, 0, 0, exps[i].image.width, exps[i].image.height, exps[i].x, exps[i].y, 50, 50);
 
 
@@ -1240,19 +1265,19 @@ async function reloadRun() {
   var chain_name = localStorage.getItem('chain_meg');
 
   if (chain_name == 'mnt'){
-    expImage.src = './img/mnt.png';
+    expImage.src = './img/mntlog.png';
   }
   else if (chain_name == 'gvt'){
-    expImage.src = './img/gvt.png';
+    expImage.src = './img/gvtlog.png';
   }
   else if (chain_name == 'lsk'){
-    expImage.src = './img/lsk.png';
+    expImage.src = './img/lsklog.png';
   }
   else if (chain_name == 'flr'){
-    expImage.src = './img/flr.png';
+    expImage.src = './img/flrlog.png';
   }
   else if (chain_name == 'eth'){
-    expImage.src = './img/eth.png';
+    expImage.src = './img/ethlog2.png';
   }
 
   if (Date.now() - lastExp >= 30000){
