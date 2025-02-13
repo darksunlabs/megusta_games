@@ -51,6 +51,14 @@ window.to_launch = to_launch;
 
 
 async function load_this_game(){
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+  if (w < 1200 || h < 540){
+    document.getElementById('bod').innerHTML = `
+      <div style="color: red;">Screen is too small to run this game.</div>
+    `;
+    return;
+  }
   var url = window.location.toString();
   var game_name = url.substring(url.indexOf('?') + 1);
   if (game_name == 'pixelmayhem'){
@@ -305,8 +313,7 @@ async function load_this_game(){
     else if (game_name == 'spacerumble'){
       console.log('this is '.concat(game_name));
       document.getElementById('game_title').textContent = 'Space Rumble';
-      const h = window.innerHeight;
-      var ch = 400;
+      var ch = 375;
       var cw = 600;
       var fsz = 3;
       var mt = 8;
@@ -1167,28 +1174,6 @@ async function preloadRun(){
   }
   else {
     ongoingRun = true;
-    const getFPS = () =>
-    new Promise(resolve =>
-      requestAnimationFrame(t1 =>
-        requestAnimationFrame(t2 => resolve(1000 / (t2 - t1)))
-      )
-    )
-
-  // Calling the function to get the FPS
-  freq = await getFPS();
-  console.log(freq);
-  if (Math.abs(144 - freq) < 10){
-    freq = 144;
-  }
-  else if (Math.abs(120 - freq) < 10){
-    freq = 120;
-  }
-  else {
-    freq = 60;
-  }
-
-
-  console.log(freq);
     await reloadRun();
   }
 }
@@ -1197,215 +1182,213 @@ window.preloadRun = preloadRun;
 
 
 async function reloadRun() {
-  // Clear the canvas
-  ctx3.clearRect(0, 0, canvas3.width, canvas3.height);
-  clearScreen2();
-  // Draw the player
-  ctx3.drawImage(playerImage, 0, 0, playerImage.width, playerImage.height, playerX, playerY, Math.floor(3*usize/2), usize);
-  if (Date.now() - armorStart >= 3000){
-    armorOn = false;
-  }
+  var tn = performance.now();
+  if (tn - lastLoop >= 15.9){
+    // Clear the canvas
+    ctx3.clearRect(0, 0, canvas3.width, canvas3.height);
+    clearScreen2();
+    // Draw the player
+    ctx3.drawImage(playerImage, 0, 0, playerImage.width, playerImage.height, playerX, playerY, Math.floor(3*usize/2), usize);
+    if (Date.now() - armorStart >= 3000){
+      armorOn = false;
+    }
 
 
-  // Update the obstacles
-  for (let i = 0; i < obstacles.length; i++) {
-    obstacles[i].x -= obstacleSpeed;
+    // Update the obstacles
+    for (let i = 0; i < obstacles.length; i++) {
+      obstacles[i].x -= obstacleSpeed;
 
-    // Draw the obstacle
-    ctx3.drawImage(obstacles[i].image, 0, 0, obstacles[i].image.width, obstacles[i].image.height, obstacles[i].x, obstacles[i].y, usize, usize);
+      // Draw the obstacle
+      ctx3.drawImage(obstacles[i].image, 0, 0, obstacles[i].image.width, obstacles[i].image.height, obstacles[i].x, obstacles[i].y, usize, usize);
 
-    if (obstacles[i].x <= Math.floor(usize*3/2) && Math.abs(playerY - obstacles[i].y) <= 100){
-      ctx3.fillStyle = 'rgb(255,0,0, 0.3)';
-      ctx3.beginPath();
-      ctx3.roundRect(obstacles[i].x - 5, obstacles[i].y, usize + 10, usize, 20);
-      ctx3.strokeStyle = 'rgb(255,0,0, 0.2)';
-      ctx3.stroke();
-      //ctx3.ellipse(obstacles[i].x + 30, obstacles[i].y + 30, 37, 37, 0, 0,  2 * Math.PI);
-      //ctx3.ellipse(obstacles[i].x + 30, obstacles[i].y + 30, 37, 37, 0, 0,  2 * Math.PI);
-      ctx3.fill();
-
-      if (!armorOn){
-        ctx3.fillStyle = 'rgb(255,0,0, 0.2)';
-        //ctx3.fillRect(playerX,playerY,70, 50);
+      if (obstacles[i].x <= Math.floor(usize*3/2) && Math.abs(playerY - obstacles[i].y) <= 100){
+        ctx3.fillStyle = 'rgb(255,0,0, 0.3)';
         ctx3.beginPath();
-        ctx3.roundRect(playerX - 5, playerY, usize*1.6 + 2, usize, 20);
+        ctx3.roundRect(obstacles[i].x - 5, obstacles[i].y, usize + 10, usize, 20);
         ctx3.strokeStyle = 'rgb(255,0,0, 0.2)';
         ctx3.stroke();
+        //ctx3.ellipse(obstacles[i].x + 30, obstacles[i].y + 30, 37, 37, 0, 0,  2 * Math.PI);
+        //ctx3.ellipse(obstacles[i].x + 30, obstacles[i].y + 30, 37, 37, 0, 0,  2 * Math.PI);
         ctx3.fill();
+
+        if (!armorOn){
+          ctx3.fillStyle = 'rgb(255,0,0, 0.2)';
+          //ctx3.fillRect(playerX,playerY,70, 50);
+          ctx3.beginPath();
+          ctx3.roundRect(playerX - 5, playerY, usize*1.6 + 2, usize, 20);
+          ctx3.strokeStyle = 'rgb(255,0,0, 0.2)';
+          ctx3.stroke();
+          ctx3.fill();
+        }
+
+
       }
 
+      // Check for collision with the player
+      if (checkCollisionRun(playerX, playerY, usize, usize, obstacles[i].x, obstacles[i].y, usize, usize)) {
+        if (armorOn){
+          continue;
+        }
+        else {
+          // Game over
+          ctx3.fillStyle = 'black';
+          ctx3.globalAlpha = 0.75;
+          ctx3.fillRect(0, canvas3.height / 2 - usize/2, canvas3.width, usize);
 
+          ctx3.globalAlpha = 1;
+          ctx3.fillStyle = 'white';
+          ctx3.font = '32px monospace';
+          ctx3.textAlign = 'center';
+          ctx3.textBaseline = 'middle';
+          ctx3.fillText('GAME OVER! Your score is '.concat(scoreRun.toString()), canvas3.width / 2, canvas3.height / 2);
+          obstacles = [];
+          scoreRun = 0;
+          exps = [];
+          expOn = false;
+          lastExp = Date.now();
+          armorOn = false;
+          armorStart = 0;
+          armorLeft = 1;
+          armorLevel = 1000;
+          ongoingRun = false;
+          return;
+        }
+
+      }
+
+      // Remove the obstacle if it's off the screen
+      if (obstacles[i].x < -obstacles[i].image.width) {
+        obstacles.splice(i, 1);
+      }
     }
 
-    // Check for collision with the player
-    if (checkCollisionRun(playerX, playerY, usize, usize, obstacles[i].x, obstacles[i].y, usize, usize)) {
-      if (armorOn){
-        continue;
+    if (armorOn){
+      ctx3.fillStyle = 'rgb(255,255,0, 0.3)';
+      //ctx3.fillRect(playerX,playerY,70, 50);
+      ctx3.beginPath();
+      ctx3.ellipse(playerX + usize/2 + 10, playerY + usize/2, usize, usize/2, 0, 0,  2 * Math.PI);
+      ctx3.fill();
+    }
+
+    // Add new obstacles
+    var yObst = Math.floor(Math.random() * (canvas3.height - usize));
+    var zone_prev = 0;
+    var zone_new = 1;
+    var strikes = 0;
+    const band = canvas3.height/3;
+
+
+    if (Math.random() < 0.035) {
+      const obstacleImage = Math.random() < 0.5 ? obstacle1Image : obstacle2Image;
+      if (yObst > 2*band){
+        yObst = Math.floor(Math.random() * (band));
+        zone_new = 1;
+      }
+      else if (yObst <= 2*band && yObst > band){
+        yObst = Math.floor(Math.random() * (band - usize) + 2*band);
+        zone_new = 2;
       }
       else {
-        // Game over
-        ctx3.fillStyle = 'black';
-        ctx3.globalAlpha = 0.75;
-        ctx3.fillRect(0, canvas3.height / 2 - usize/2, canvas3.width, usize);
+        yObst = Math.floor(Math.random() * (band - usize) + band);
+        zone_new = 3;
+      }
 
-        ctx3.globalAlpha = 1;
-        ctx3.fillStyle = 'white';
-        ctx3.font = '32px monospace';
-        ctx3.textAlign = 'center';
-        ctx3.textBaseline = 'middle';
-        ctx3.fillText('GAME OVER! Your score is '.concat(scoreRun.toString()), canvas3.width / 2, canvas3.height / 2);
-        obstacles = [];
-        scoreRun = 0;
-        exps = [];
-        expOn = false;
-        lastExp = Date.now();
-        armorOn = false;
-        armorStart = 0;
-        armorLeft = 1;
-        armorLevel = 1000;
-        ongoingRun = false;
-        return;
+      if (zone_new != zone_prev){
+        obstacles.push({ x: canvas3.width, y: yObst, image: obstacleImage });
+        zone_prev = zone_new;
+      }
+      else {
+        strikes++;
+        if (strikes == 3){
+          strikes = 0;
+          zone_prev = 0;
+        }
+
       }
 
     }
 
-    // Remove the obstacle if it's off the screen
-    if (obstacles[i].x < -obstacles[i].image.width) {
-      obstacles.splice(i, 1);
-    }
-  }
+    // Update the exps
+    for (let i = 0; i < exps.length; i++) {
+      exps[i].x -= expSpeed;
 
-  if (armorOn){
-    ctx3.fillStyle = 'rgb(255,255,0, 0.3)';
-    //ctx3.fillRect(playerX,playerY,70, 50);
-    ctx3.beginPath();
-    ctx3.ellipse(playerX + usize/2 + 10, playerY + usize/2, usize, usize/2, 0, 0,  2 * Math.PI);
-    ctx3.fill();
-  }
-
-  // Add new obstacles
-  var yObst = Math.floor(Math.random() * (canvas3.height - usize));
-  var zone_prev = 0;
-  var zone_new = 1;
-  var strikes = 0;
-  const band = canvas3.height/3;
+      // Draw the exp
+      ctx3.fillStyle = 'rgba(170,170,170,0.7)';
+      ctx3.fillRect(exps[i].x, exps[i].y,usize,usize);
+      ctx3.drawImage(exps[i].image, 0, 0, exps[i].image.width, exps[i].image.height, exps[i].x, exps[i].y, usize, usize);
 
 
-  if (Math.random() < 0.035) {
-    const obstacleImage = Math.random() < 0.5 ? obstacle1Image : obstacle2Image;
-    if (yObst > 2*band){
-      yObst = Math.floor(Math.random() * (band));
-      zone_new = 1;
-    }
-    else if (yObst <= 2*band && yObst > band){
-      yObst = Math.floor(Math.random() * (band - usize) + 2*band);
-      zone_new = 2;
-    }
-    else {
-      yObst = Math.floor(Math.random() * (band - usize) + band);
-      zone_new = 3;
-    }
 
-    if (zone_new != zone_prev){
-      obstacles.push({ x: canvas3.width, y: yObst, image: obstacleImage });
-      zone_prev = zone_new;
-    }
-    else {
-      strikes++;
-      if (strikes == 3){
-        strikes = 0;
-        zone_prev = 0;
+      // Remove the exp if it's off the screen
+      if (exps[i].x < -exps[i].image.width) {
+        exps.splice(i, 1);
       }
 
+      // Check if the player received the incoming exp
+      else if (checkCollisionRun(playerX, playerY, usize, usize, exps[i].x, exps[i].y, usize, usize)) {
+        expOn = true;
+        exps.splice(i, 1);
+      }
+      else {}
     }
 
-  }
-
-  // Update the exps
-  for (let i = 0; i < exps.length; i++) {
-    exps[i].x -= expSpeed;
-
-    // Draw the exp
-    ctx3.fillStyle = 'rgba(170,170,170,0.7)';
-    ctx3.fillRect(exps[i].x, exps[i].y,usize,usize);
-    ctx3.drawImage(exps[i].image, 0, 0, exps[i].image.width, exps[i].image.height, exps[i].x, exps[i].y, usize, usize);
+    // add ExpUp
 
 
+    var chain_name = localStorage.getItem('chain_meg');
 
-    // Remove the exp if it's off the screen
-    if (exps[i].x < -exps[i].image.width) {
-      exps.splice(i, 1);
+    if (chain_name == 'mnt'){
+      expImage.src = './img/mntlog.png';
+    }
+    else if (chain_name == 'gvt'){
+      expImage.src = './img/gvtlog.png';
+    }
+    else if (chain_name == 'lsk'){
+      expImage.src = './img/lsklog.png';
+    }
+    else if (chain_name == 'flr'){
+      expImage.src = './img/flrlog.png';
+    }
+    else if (chain_name == 'eth'){
+      expImage.src = './img/ethlog2.png';
     }
 
-    // Check if the player received the incoming exp
-    else if (checkCollisionRun(playerX, playerY, usize, usize, exps[i].x, exps[i].y, usize, usize)) {
-      expOn = true;
-      exps.splice(i, 1);
+    if (Date.now() - lastExp >= 20000){
+      lastExp = Date.now();
+      const yExp = Math.floor(Math.random()*(canvas3.height - usize));
+      exps.push({ x: canvas3.width, y: yExp, image: expImage });
     }
-    else {}
-  }
-
-  // add ExpUp
-
-  
-  var chain_name = localStorage.getItem('chain_meg');
-
-  if (chain_name == 'mnt'){
-    expImage.src = './img/mntlog.png';
-  }
-  else if (chain_name == 'gvt'){
-    expImage.src = './img/gvtlog.png';
-  }
-  else if (chain_name == 'lsk'){
-    expImage.src = './img/lsklog.png';
-  }
-  else if (chain_name == 'flr'){
-    expImage.src = './img/flrlog.png';
-  }
-  else if (chain_name == 'eth'){
-    expImage.src = './img/ethlog2.png';
-  }
-
-  if (Date.now() - lastExp >= 20000){
-    lastExp = Date.now();
-    const yExp = Math.floor(Math.random()*(canvas3.height - usize));
-    exps.push({ x: canvas3.width, y: yExp, image: expImage });
-  }
 
 
-  // Update the score
-  if (expOn){
-    scoreRun = scoreRun + 500;
-    expOn = false;
-  }
-  else {
-    scoreRun = scoreRun + 1;
+    // Update the score
+    if (expOn){
+      scoreRun = scoreRun + 500;
+      expOn = false;
+    }
+    else {
+      scoreRun = scoreRun + 1;
+    }
+
+    // Update the armor
+    if (scoreRun >= armorLevel && armorLeft < 9){
+      armorLeft++;
+      armorLevel = armorLevel * 2.5;
+    }
+
+
+    // Draw the score
+    ctx3.font = '20px Arial';
+    ctx3.fillStyle = '#cccccc';
+    ctx3.textAlign = 'left';
+    ctx3.textBaseline = 'top';
+    ctx3.fillText('Score: ' + scoreRun, 10, 10);
+    ctx3.fillText('Armor: ' + armorLeft, canvas3.width - 95, 10);
+    lastLoop = tn;
   }
 
-  // Update the armor
-  if (scoreRun >= armorLevel && armorLeft < 9){
-    armorLeft++;
-    armorLevel = armorLevel * 2.5;
-  }
-
-
-  // Draw the score
-  ctx3.font = '20px Arial';
-  ctx3.fillStyle = '#cccccc';
-  ctx3.textAlign = 'left';
-  ctx3.textBaseline = 'top';
-  ctx3.fillText('Score: ' + scoreRun, 10, 10);
-  ctx3.fillText('Armor: ' + armorLeft, canvas3.width - 95, 10);
 
   // Request the next frame
-  if (freq != 60){
-    setTimeout(() => {
-      requestAnimationFrame(reloadRun);
-    }, 1000 / 60);
-  }
-  else {
-    requestAnimationFrame(reloadRun);
-  }
+  requestAnimationFrame(reloadRun);
 }
 window.reloadRun = reloadRun;
 
