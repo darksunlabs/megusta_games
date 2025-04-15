@@ -1760,6 +1760,9 @@ const PIPE_GAP = 100; // Gap size just enough for the bird
 const PIPE_SPEED = 1;
 const PIPE_SPACING = 350;
 
+var img_brd = new Image();
+img_brd.src = './img/nyan.png';
+
 // Game state
 let bird = {
     x: 100,
@@ -1772,6 +1775,7 @@ let pipes = [];
 let gameOverFlap = false;
 let scoreFlap = 0;
 let rafFlap = null;
+let seedFlap = 0;
 
 // Pipe constructor
 function createPipe() {
@@ -1852,8 +1856,18 @@ function drawFlap() {
     ctx6.fillRect(0, 0, canvas6.width, canvas6.height);
 
     // Draw bird
-    ctx6.fillStyle = 'yellow';
-    ctx6.fillRect(bird.x, bird.y, bird.width, bird.height);
+    if (seedFlap % 7 == 0){
+      img_brd.src = "./img/flapup.svg";
+    }
+    else {
+      img_brd.src = "./img/flapdown.svg";
+    }
+
+
+    ctx6.drawImage(img_brd, bird.x, bird.y, bird.width, bird.height);
+
+    //ctx6.fillStyle = 'yellow';
+    //ctx6.fillRect(bird.x, bird.y, bird.width, bird.height);
 
     // Draw pipes
     ctx6.fillStyle = 'green';
@@ -1879,6 +1893,9 @@ function drawFlap() {
         ctx6.fillText('Press Space to Restart', canvas6.width / 2, canvas6.height / 2 + 50);
         ctx6.textAlign = 'start';
         cancelAnimationFrame(rafFlap);
+    }
+    else {
+      seedFlap++;
     }
 }
 
