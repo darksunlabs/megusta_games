@@ -1753,8 +1753,8 @@ canvas6.height = 600;
 // Game constants
 const GRAVITY = 0.04;
 const FLAP = -1;
-const BIRD_WIDTH = 30;
-const BIRD_HEIGHT = 30;
+const BIRD_WIDTH = 50;
+const BIRD_HEIGHT = 50;
 const PIPE_WIDTH = 70;
 const PIPE_GAP = 100; // Gap size just enough for the bird
 const PIPE_SPEED = 1;
@@ -1776,6 +1776,7 @@ let gameOverFlap = false;
 let scoreFlap = 0;
 let rafFlap = null;
 let seedFlap = 0;
+let gridFlap = 50;
 
 // Pipe constructor
 function createPipe() {
@@ -1870,12 +1871,18 @@ function drawFlap() {
     //ctx6.fillRect(bird.x, bird.y, bird.width, bird.height);
 
     // Draw pipes
-    ctx6.fillStyle = 'green';
+
     for (let pipe of pipes) {
+        ctx6.fillStyle = 'green';
         // Top pipe (from top to gapY - PIPE_GAP)
         ctx6.fillRect(pipe.x, 0, pipe.width, pipe.gapY - PIPE_GAP);
         // Bottom pipe (from gapY to canvas bottom)
         ctx6.fillRect(pipe.x, pipe.gapY, pipe.width, canvas6.height - pipe.gapY);
+
+        console.log(pipe.gapY - PIPE_GAP);
+        ctx6.fillStyle = '#004400';
+        ctx6.fillRect(pipe.x - 5, pipe.gapY, pipe.width + 10, 10);
+        ctx6.fillRect(pipe.x - 5, pipe.gapY - PIPE_GAP - 10, pipe.width + 10, 10);
     }
 
     // Draw score
@@ -1885,12 +1892,27 @@ function drawFlap() {
 
     // Draw game over message
     if (gameOverFlap) {
-        ctx6.fillStyle = 'red';
-        ctx6.font = '40px Arial';
-        ctx6.textAlign = 'center';
-        ctx6.fillText('Game Over', canvas6.width / 2, canvas6.height / 2);
-        ctx6.font = '20px Arial';
-        ctx6.fillText('Press Space to Restart', canvas6.width / 2, canvas6.height / 2 + 50);
+      ctx6.fillStyle = 'black';
+      ctx6.globalAlpha = 0.75;
+      ctx6.fillRect(0, canvas6.height / 2 - 30, canvas6.width, 60);
+
+      ctx6.globalAlpha = 1;
+      ctx6.fillStyle = 'white';
+      if (gridFlap == 25){
+        ctx6.font = '14px monospace';
+      }
+      else {
+        ctx6.font = '16px monospace';
+      }
+      ctx6.textAlign = 'center';
+      ctx6.textBaseline = 'middle';
+      ctx6.fillText('GAME OVER! Your score is '.concat(scoreFlap.toString()), canvas6.width / 2, canvas6.height / 2);
+        //ctx6.fillStyle = 'red';
+        //ctx6.font = '40px Arial';
+        //ctx6.textAlign = 'center';
+        //ctx6.fillText('Game Over', canvas6.width / 2, canvas6.height / 2);
+        //ctx6.font = '20px Arial';
+        //ctx6.fillText('Press Space to Restart', canvas6.width / 2, canvas6.height / 2 + 50);
         ctx6.textAlign = 'start';
         cancelAnimationFrame(rafFlap);
     }
@@ -1999,6 +2021,16 @@ async function load_rules(){
         <p style="font-size: 2em;">The Iconic Classic is back to remind you of the Good Ol' Days</p>
         <p style="font-size: 1.6em;">Accommodate as many blocks on the canvas as you can before they overflow.  </p>
         <p style="font-size: 1.6em;">Completely filled horizontal rows disappear, leaving you with more room to work with.</p>
+        <p style="font-size: 1.6em;">The highest score at the time of competition close wins!</p>
+
+    `;
+  }
+  else if (game_name == 'flapperoo'){
+    el2.textContent = 'Flapperoo';
+    el.innerHTML = `
+        <p style="font-size: 2em;">This game needs no introduction</p>
+        <p style="font-size: 1.6em;">Help Flapperoo avoid the pipes and keep going.  </p>
+        <p style="font-size: 1.6em;">Use the UP button to fly higher, and the LEFT button to fly quicker.</p>
         <p style="font-size: 1.6em;">The highest score at the time of competition close wins!</p>
 
     `;
