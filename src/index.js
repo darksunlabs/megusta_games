@@ -48,6 +48,10 @@ async function to_launch(game){
 }
 window.to_launch = to_launch;
 
+async function to_site(){
+  window.open("https://megustaapp.netlify.app","_blank");
+}
+window.to_site = to_site;
 
 
 async function load_this_game(){
